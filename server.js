@@ -25,12 +25,14 @@ const db = mysql.createConnection(
 // Queries
 
 // selects all departments
-db.query(`SELECT * FROM department`, (err, result) => {
+const departmentsQuery = db.query(`SELECT * FROM department`, (err, result) => {
     if (err) {
       console.log(err);
     }
     res.json(result);
   });
+
+// 
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
