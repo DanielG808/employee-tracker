@@ -1,33 +1,92 @@
-const inquirer = require('inquirer');
+const inquirer = require("inquirer");
+const db = require("./db/db");
 
-const initQuestion = 
-    {
-        type: 'list',
-        message: 'What would you like to do?',
-        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an emplopyee', 'Update an employee role'],
-        name: 'firstChoice'
+// Queries
+
+// query for all departments
+const departmentsQuery = () =>
+  db.query(`SELECT * FROM department`, (err, result) => {
+    if (err) {
+      console.log(err);
     }
+    console.table(result);
+  });
+
+// query for all roles
+const rolesQuery = () =>
+  db.query(`SELECT * FROM role`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+  });
+
+// query for all employees
+const employeesQuery = () =>
+  db.query(`SELECT * FROM employee`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+  });
+
+// query to add employee
+const addDepartment = () => {
+  const question = {
+    type: "input",
+    message: "What is the name of the new department?",
+    name: "departmentName",
+  };
+
+  inquirer.prompt(question).then((answer) => {
+    console.log(answer);
+    db.query(
+      `INSERT INTO department (name) VALUES (?)`,
+      answer.departmentName,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        departmentsQuery();
+      }
+    );
+  });
+};
+
+const initQuestion = {
+  type: "list",
+  message: "What would you like to do?",
+  choices: [
+    "View all departments",
+    "View all roles",
+    "View all employees",
+    "Add a department",
+    "Add a role",
+    "Add an emplopyee",
+    "Update an employee role",
+  ],
+  name: "firstChoice",
+};
 
 function handleAnswers(answers) {
-    // switch statement to either run a query or prompt with more questions
-    const selectedAnswer = answers.firstChoice
+  // switch statement to either run a query or prompt with more questions
+  const selectedAnswer = answers.firstChoice;
 
-    switch (selectedAnswer) {
-        case 'View all departments': 
-        // query for all departments
-        break;
-        case 'View all roles':
-        // query for all roles
-        break;
-        case 'View all employees':
-        // query for all employees
-        break;
-        case 'Add a department':
-        // query for all roles
-        break;
-    }
-    };
+  // console.log(selectedAnswer);
+  switch (selectedAnswer) {
+    case "View all departments":
+      departmentsQuery();
+      break;
+    case "View all roles":
+      rolesQuery();
+      break;
+    case "View all employees":
+      employeesQuery();
+      break;
+    case "Add a department":
+      addDepartment();
+      break;
+  }
+}
 
-inquirer
-    .prompt(questions)
-    .then(handleAnswers(answers));
+inquirer.prompt(initQuestion).then((answers) => handleAnswers(answers));
