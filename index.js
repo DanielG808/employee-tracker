@@ -53,6 +53,29 @@ const addDepartment = () => {
   });
 };
 
+// query to add role
+const addRole = () => {
+  const question = {
+    type: "input",
+    message: "What is the name of the new department?",
+    name: "roleName",
+  };
+
+  inquirer.prompt(question).then((answer) => {
+    console.log(answer);
+    db.query(
+      `INSERT INTO role (name) VALUES (?)`,
+      answer.departmentName,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        rolesQuery();
+      }
+    );
+  });
+};
+
 const initQuestion = {
   type: "list",
   message: "What would you like to do?",
@@ -85,6 +108,9 @@ function handleAnswers(answers) {
       break;
     case "Add a department":
       addDepartment();
+      break;
+    case "Add a role":
+      addRole();
       break;
   }
 }
