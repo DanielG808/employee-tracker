@@ -10,6 +10,7 @@ const departmentsQuery = () =>
       console.log(err);
     }
     console.table(result);
+    init();
   });
 
 // query for all roles
@@ -19,6 +20,7 @@ const rolesQuery = () =>
       console.log(err);
     }
     console.table(result);
+    init();
   });
 
 // query for all employees
@@ -28,6 +30,7 @@ const employeesQuery = () =>
       console.log(err);
     }
     console.table(result);
+    init();
   });
 
 // query to add employee
@@ -55,17 +58,24 @@ const addDepartment = () => {
 
 // query to add role
 const addRole = () => {
-  const question = {
-    type: "input",
-    message: "What is the name of the new department?",
-    name: "roleName",
-  };
+  const questions = [
+    {
+      type: "input",
+      message: "What is the name of the new role?",
+      name: "roleName",
+    },
+    {
+      type: "input",
+      message: "What is the salary for this role?",
+      name: "roleSalary",
+    },
+  ];
 
-  inquirer.prompt(question).then((answer) => {
+  inquirer.prompt(questions).then((answer) => {
     console.log(answer);
     db.query(
-      `INSERT INTO role (name) VALUES (?)`,
-      answer.departmentName,
+      `INSERT INTO role (name) VALUES (?, ?, ?)`,
+      (answer.roleName, answer.roleSalary, answer.department_id),
       (err, result) => {
         if (err) {
           console.log(err);
@@ -115,4 +125,8 @@ function handleAnswers(answers) {
   }
 }
 
-inquirer.prompt(initQuestion).then((answers) => handleAnswers(answers));
+function init() {
+  inquirer.prompt(initQuestion).then((answers) => handleAnswers(answers));
+}
+
+init();
